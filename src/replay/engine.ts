@@ -226,6 +226,13 @@ export class ReplayEngine {
     );
     return values.length > 0 && values.every((e) => e.text === String(this.inputs[identity.input]));
   }
+  /**
+   * A dispatched read cannot change the application, so only a dispatched draft step
+   * whose outcome was never verified leaves its effect unknown.
+   */
+  private uncertainEffect(): 'unknown' | 'none' {
+    return this.dispatched && this.step()?.effect === 'draft' ? 'unknown' : 'none';
+  }
   private async failure(
     code: string,
     effect: 'none' | 'applied' | 'unknown' = 'none',
@@ -304,8 +311,7 @@ export class ReplayEngine {
     });
   }
   private async handleState(state: Classification, step: Step): Promise<RunResult | undefined> {
-    if (state.kind === 'failed')
-      return this.failure(state.code, this.dispatched ? 'unknown' : 'none');
+    if (state.kind === 'failed') return this.failure(state.code, this.uncertainEffect());
     if (state.kind === 'escalated') return this.escalate(state.code);
     if (state.kind === 'business_outcome') {
       const result: RunResult = {
@@ -405,7 +411,7 @@ export class ReplayEngine {
       for (; this.stepIndex < this.capability.steps.length; this.stepIndex++) {
         this.session.assertOwner();
         if (this.activeMs + Date.now() - this.activeStarted > 300_000)
-          return await this.failure('RUN_TIMEOUT', this.dispatched ? 'unknown' : 'none');
+          return await this.failure('RUN_TIMEOUT', this.uncertainEffect());
         const step = this.step()!;
         this.dispatched = false;
         const before = await this.observe();
@@ -515,7 +521,7 @@ export class ReplayEngine {
         ].includes(code)
       )
         return await this.escalate(code);
-      return await this.failure(code, this.dispatched ? 'unknown' : 'none');
+      return await this.failure(code, this.uncertainEffect());
     } finally {
       this.activeMs += Date.now() - this.activeStarted;
       this.executing = false;
@@ -603,7 +609,7 @@ export class ReplayEngine {
       stepId: this.step()?.id,
       expected: 'Operator continuation',
       observed: 'Run aborted',
-      effect: this.dispatched ? 'unknown' : 'none',
+      effect: this.uncertainEffect(),
       evidence: [],
       assisted: this.assisted,
     };

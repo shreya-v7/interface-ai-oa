@@ -1,16 +1,17 @@
 # Architecture
 
-The problem is reliable execution inside legacy software with no usable API.
-The prototype prepares a synthetic savings application through its review screen.
-It searches for a member, opens the correct record, fills the application, and
-returns four values read from the review. It never opens a real account.
+The problem is reliable execution inside legacy software with no usable API. The
+prototype prepares a synthetic savings application through its review screen: it
+searches for a member, opens the correct record, fills the application, and returns
+four values read from the review. It never opens an account.
 
-The flow is: **observe UI, choose an action, enforce policy, execute, verify,
-compile, replay**. During discovery, Bedrock receives the current UI tree, goal,
-input symbols, and recent action results. It proposes one typed decision at a time.
-The compiler saves executed actions and verified checkpoints. Replay imports no
-model client. One local worker owns one browser session.
-The worker exclusively owns a local state directory; browsers use separate contexts.
+The flow is **discover once, compile, verify, replay many times**. During discovery,
+Bedrock (Nova 2 Lite) receives the goal, the input names with their synthetic values,
+the inputs not yet entered, a history of executed actions, and a normalized UI tree
+with visible page text. It returns one schema-checked decision per turn. Because
+values and page text reach the provider, discovery must run on sandbox or synthetic
+data. The compiler keeps only executed actions and verified checkpoints. Replay
+imports no model client. One local worker owns one browser session per run.
 
 | Stack                    | Why it is used                                                |
 | ------------------------ | ------------------------------------------------------------- |
@@ -20,110 +21,130 @@ The worker exclusively owns a local state directory; browsers use separate conte
 | AWS Bedrock, Nova 2 Lite | Real discovery with measured token usage and cost             |
 | Fastify                  | Small local simulator and operator server                     |
 | MCP SDK                  | Standard capability catalog and typed agent calls             |
-| jose                     | Signed OpenID Connect token verification                      |
 | Vitest                   | Repeatable contract, browser, safety, and handoff tests       |
 | JSON and JSONL           | Reviewable artifacts and evidence without a database          |
 
+Local OpenID Connect sign-in and a durable run store exceed the brief. They exist to
+make the handoff and retry story credible, are not part of the capability contract,
+and can be ignored when assessing the core.
+
 # Artifact schema
 
-Each immutable capability contains app compatibility, typed inputs and outputs,
-frame-scoped targets, input bindings, steps, preconditions, postconditions,
-repeatability rules, completion checks, and provenance. A SHA-256 digest detects
-changes. Verification separately binds the artifact, runtime, policy, and tenant
-profiles to successful replay evidence.
+Each immutable capability declares app compatibility, typed inputs (patterns,
+enums, ranges, sensitivity) and outputs (type, source target, parser), frame-scoped
+targets, ordered steps with preconditions, postconditions, effect class (`read` or
+`draft`) and repeat rule, a completion predicate, an identity binding, and
+provenance. A SHA-256 digest detects edits. Verification separately binds the
+artifact, runtime code, policy, and tenant profiles to replay evidence; any change
+makes it uncallable until `verify` passes again.
 
-The model supplies values through input symbols. The compiler replaces known
-record-specific values and routes with bindings, and rejects remaining discovery
-literals. Money uses integer minor units. Outputs come from the visible review,
-not from echoing the request. Automated verification is not human approval.
+The model supplies values only through input symbols. The compiler replaces known
+record values and routes with bindings and rejects remaining discovery literals.
+Money uses integer minor units. Outputs are read from the review screen and checked
+against the request; on this task they are verification read-backs, because the
+review exposes no application-generated identifier. Outcome codes come from a
+vendor-level exception pack shared by every capability of that app, bound through
+the verification digest rather than copied into each artifact. Automated
+verification is not human approval.
 
 # Determinism & error handling
 
-Locator anchors must identify the same element. The results row must match the
-requested member. Actions pin the scanned DOM node and recheck its live metadata,
-so replacement controls cannot inherit an old authorization. Ambiguous or conflicting targets stop execution. Each action
-has a bounded wait that checks both its checkpoint and known error screens.
+Each control is described by several anchors (role and name, label, nearby caption,
+and, for result rows, the row keyed by the member input). They must resolve to the
+same element; ambiguity or disagreement stops the run instead of picking a match.
+These anchors often derive from the same caption, so agreement guards against
+selecting a different control more than it proves independence. Actions pin the
+resolved DOM node and recheck its live metadata before acting. Every wait is bounded
+and polls for either the step's checkpoint or a known error screen.
 
-Not-found and validation results are business outcomes. Reviewed handlers recover
-from a notice or transient read error within a retry limit. Wrong review values
-and permission errors fail. Unknown states escalate. An uncertain write is never
-blindly repeated.
+The taxonomy follows one rule. A **business outcome** is the application evaluating
+a well-formed request and saying no (member not found, validation rejected). A
+**recoverable** condition is a known transient with a reviewed, read-safe handler
+(a notice to dismiss, one retry of a failed read), bounded per run. **Escalation**
+means a person in the live session can fix it (expired session, ambiguous control,
+unknown dialog, unverified checkpoint). **Failure** means continuing is unsafe or
+the artifact is wrong (permission denied, review values not matching the request).
+Failures report the step, code, and evidence; the expected and observed texts are
+currently generic, which is a known gap.
 
-Replay syncs action intents and checkpoints through atomic file replacement.
-Restart marks unfinished runs interrupted and blocks new work until operator review.
-MCP request keys are scoped to the service identity and tenant. They prevent duplicate
-dispatch across restarts; keyed fingerprints
-detect changed arguments without saving their values. Lost sessions never restart
-automatically. Storage errors stop execution. Tests kill a worker after the simulator
-accepts a write and verify that retrying the request causes no second write.
+Inputs are validated against the capability's schema before the simulator, browser,
+or earlier evidence is touched. A failure's effect is `unknown` only when a
+dispatched `draft` step was never verified; read-only failures report `none`.
+Uncertain writes are never repeated. Action intents are synced before dispatch; a
+restart marks unfinished runs interrupted. Only runs with an unverified write, or a
+failure after human control, wait for operator review; business outcomes and
+read-only failures settle normally.
 
-The evaluator independently compares returned values, rendered review rows, and
-simulator records. Its 132 cases comprise 120 varied-input cases, ten identical-input
-repetitions, and two scripted handoffs. Hard gates require zero false success,
-forbidden effects, unsafe dispatches, replay model calls, and configured sentinel
-leaks. Stale ownership is tested in handoff cases. Reports state each metric's
-coverage; these synthetic results do not establish production reliability.
-Separate adversarial tests inject DOM changes, output races, redirects, malformed
-artifacts, and ownership races. Completion rechecks displayed values and blockers.
+The evaluator compares returned values, rendered review rows, and simulator records
+with code independent of the engine: 12 fault scenarios on 2 banks with 5 input sets
+each, plus 10 identical-input repeats and 2 scripted handoffs (132 cases). Hard gates
+require zero false successes, forbidden effects, unsafe dispatches, replay model
+calls, and planted-value leaks. These synthetic results do not establish production
+reliability.
 
 # Heterogeneity & multi-tenant
 
-The same capability runs on two vendor variants. Tenant settings map origins,
-frame names, and labels; bank B also changes table order and uses nearby table
-text to caption fields. Profiles cannot change steps, identity, or completion.
-Unsupported app versions are rejected. Browser-specific work stays in the surface
-adapter. Desktop and pixel-based control are not implemented.
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) maps each seam here to its production form:
-worker leases with fencing tokens, a Postgres intent journal, digest-addressed
-releases, and per-tenant isolation.
+The recorded flow references controls by semantic anchors and vendor label keys
+(`@label.memberId`), never by CSS, XPath, or coordinates. Perception and action sit
+behind the browser adapter (`observe`, `resolve`, `act`, `check`, `read`). The seam
+is not yet a formal interface: the engine still touches the Playwright page, and some
+heuristics use HTML tags. A legacy web app is the case built here (framesets, nested
+tables, fields captioned only by neighbouring cells, no IDs). A desktop adapter would
+build the same UI tree from Windows UI Automation or macOS accessibility, and a
+surface with no usable DOM would need a pixel and OCR adapter whose anchors are text
+plus region. Neither is built.
+
+One capability runs on both bank variants. Tenant profiles map origins, frame names,
+and label wording; bank B also reorders columns and has no field labels. Profiles
+cannot change steps, identity, or completion. Unsupported app versions are refused
+before acting. Missing anchors are reported as `drift` in each result. A known
+limitation: v2's heading targets include bank A's banner text as an anchor, so every
+bank B run reports one missing anchor; the next compiler revision should keep only
+vendor label keys. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) maps these seams to
+production: per-tenant drift aggregation and suspension, worker leases, and
+digest-addressed releases.
 
 # Escalation & handoff
 
-A stuck run pauses and revokes automation ownership. The operator takes the same
-live Chromium session through a local console. A changing ownership counter rejects
-stale actions. Resume verifies the member and suspended step before advancing or
-performing an explicitly safe retry. Wrong state stays paused. Action kinds and
-ownership changes are recorded without entered values. Tests use scripted operators.
-Interrupted sessions remain visible after restart. An authenticated administrator can
-acknowledge them without replaying actions or asserting success.
+A replay that cannot safely continue pauses and revokes automation ownership. The
+operator console shows the capability, step, and reason, and the operator takes the
+same live Chromium session. Each handover increments an ownership epoch, so stale
+automation actions and stale console clicks are refused. Resume re-reads the screen:
+it advances only when the suspended step's postcondition holds, retries only when
+explicitly safe, and stays paused on the wrong member or state. Human actions are
+recorded by control name, never by typed value. During discovery, escalation happens
+when the model requests help. Evidence uses scripted operators.
 
 # Safety
 
-A reviewed policy limits actions, targets, routes, and origins. The browser network
-guard stays active during human control and blocks final account creation, including
-keyboard submission. Chromium response interception validates every redirect destination
-and method before following it. Popups, downloads, service workers, and WebSockets are restricted.
+A reviewed vendor policy allowlists routes, origins, action types, clickable
+controls, and fillable fields. Irreversible actions are blocked rather than
+confirmed: account creation is outside the capability's scope, so a person performs
+it after the agent reads the verified review. The browser network guard blocks the
+commit endpoint, off-allowlist origins, unsafe redirects, popups, downloads, and
+WebSockets, for automation and humans alike, including keyboard submission.
 
-Evidence stores allowlisted metadata, text-free structures, and masked screenshots.
-Credentials stay in local configuration. Discovery reserves cost before each request,
-uses a cumulative $3 limit, and does not retry provider calls automatically. Privacy
-checks cover known synthetic sentinels, not arbitrary regulated data.
-
-The loopback console supports OpenID Connect authorization code flow with PKCE,
-state, nonce, and signed-token validation through jose. A local identity provider
-exercises the complete browser flow. The client supports public clients, RS256,
-and same-origin discovery endpoints. HTTP is allowed only for explicitly configured
-loopback providers. Invalid SSO configuration cannot enable key login.
-
-Verified subjects map to local tenant and role grants. Lists, live events, controls,
-and MCP status calls enforce those grants. Callers cannot supply their own role.
-Viewer, operator, administrator, and agent permissions are tested, including foreign
-run IDs and account switching. HttpOnly sessions expire after 15 minutes; logout
-revokes their event streams. Key-based local administration remains an explicit mode.
-Credential and state files are owner-only; durable records omit raw arguments,
-outputs, and browser credentials. Stdio MCP trusts the launching OS user and selects
-its service identity at startup. Permission changes require a worker restart.
+Evidence keeps allowlisted metadata, text-free structures, and masked screenshots;
+journals never hold input values. Discovery reserves cost before each call under a
+cumulative $3 cap and never retries provider calls. The console uses OpenID Connect
+with PKCE and per-tenant roles; MCP calls are scoped to a service identity. Privacy
+checks cover planted synthetic values, not arbitrary regulated data.
 
 # Cuts
 
-The two stretch features are MCP invocation and cross-tenant reuse. Final account
-creation, desktop control, remote co-browsing, approval UI, code generation, model
-repair, distributed workers, and model training are excluded. Replay already uses
-no model, so training a smaller model would not improve this execution path.
+The two stretch goals are the MCP capability catalog and cross-tenant reuse; repeat
+runs are part of the evaluation, not a feature.
 
-Authentication and recovery are tested against local SSO and the simulator. A real
-deployment still needs validation against its identity provider and vendor app, TLS,
-managed secrets, shared transactional storage, and application effect reconciliation.
-These additions do not restore browser sessions or guarantee exactly-once effects.
-Current results are in [metrics](evidence/metrics.md) and the
+- **Desktop and pixel surfaces:** one surface done in depth beat several shallow
+  ones. Next: extract a surface interface and build an accessibility-tree adapter.
+- **Approval workflow for risky steps:** blocking is safer for this scope. Next: a
+  `commit` effect class that escalates for a recorded human decision.
+- **Remote co-browsing:** the operator uses the worker's window. Next: stream the
+  session to the console and forward input under the same ownership epoch.
+- **Code generation and model-assisted repair:** they do not strengthen the core.
+- **Distributed workers and model training:** infrastructure the brief does not
+  reward; replay already uses no model.
+
+Authentication and recovery are tested only against local SSO and the simulator.
+Results are in [metrics](evidence/metrics.md) and the
 [evaluation report](evidence/eval/report.md).

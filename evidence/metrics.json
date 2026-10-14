@@ -136,15 +136,15 @@
     "modelCallsDuringReplay": 0,
     "runLatencyMs": {
       "count": 120,
-      "p50": 544,
-      "p95": 2676,
-      "max": 2754
+      "p50": 628,
+      "p95": 2785,
+      "max": 2812
     },
     "stepLatencyMs": {
       "count": 946,
-      "p50": 44,
-      "p95": 107,
-      "max": 2233
+      "p50": 52,
+      "p95": 114,
+      "max": 2244
     },
     "repeatability": [
       {

@@ -10,18 +10,63 @@ reusable capability, then runs that capability with new inputs without a model.
 review screen. Return the member ID, product, nickname, and opening deposit read
 from that screen. All data is synthetic. Final account creation is blocked.
 
+## How it works
+
+```mermaid
+flowchart TD
+  subgraph D["1 · Discover (once, uses the model)"]
+    G["Goal + target bank<br/>npm run discover"] --> L["Discovery loop<br/>observe screen → one checked decision → act"]
+    L <-->|"one tool call per turn"| M[("Amazon Nova 2 Lite<br/>AWS Bedrock")]
+    L --> C["Compiler<br/>executed steps only · inputs become symbols"]
+  end
+  C --> A[("Capability vN.json<br/>typed inputs/outputs · targets · checkpoints · SHA-256")]
+  A --> V["2 · Verify (no model)<br/>replay new inputs on bank A and bank B"]
+  V --> VR[("vN.verified.json")]
+  subgraph R["3 · Replay (every call, no model)"]
+    AG["AI agent (MCP) or CLI"] --> REG["Registry<br/>newest verified version only"]
+    REG --> IN["Validate inputs against the capability"]
+    IN --> E["Replay engine<br/>step → wait for checkpoint or known error screen"]
+    E --> S["Browser adapter (Playwright)<br/>find control by agreeing anchors"]
+    S --> P{"Policy gate +<br/>network guard"}
+    P -->|"allowed"| B["Legacy bank app<br/>(simulator: Harbor, Cedar)"]
+    P -->|"blocked"| X["No action; account creation is impossible"]
+  end
+  VR --> REG
+  E --> O["Typed result<br/>success · business_outcome · failed · escalated"]
+  E -->|"stuck, ambiguous, session expired"| H["4 · Escalate<br/>operator console: Take control"]
+  H -->|"same live browser session"| B
+  H -->|"Resume: re-check the screen first"| E
+```
+
+1. **Discover.** The model sees a simplified view of the current screen and picks one
+   action at a time. Every decision must reference an element on that screen, use
+   input names instead of raw values, and pass the safety policy.
+2. **Compile.** Only actions that actually ran become steps. Any leftover discovery
+   value fails the build. The capability is a typed JSON contract with a digest.
+3. **Verify.** It becomes callable only after replaying, with no model, on inputs it
+   was not discovered with, on both bank variants.
+4. **Replay.** Each call validates inputs, then runs the steps. Every step waits for
+   its expected screen or a known error screen and returns a typed result.
+5. **Escalate.** When it cannot safely continue, it pauses; a person takes over the
+   same browser and hands back; the run re-checks the screen before continuing.
+
 ## Features
 
-- Real discovery with Amazon Nova 2 Lite on AWS Bedrock.
+Core (what the brief evaluates):
+
+- Real discovery with Amazon Nova 2 Lite on AWS Bedrock; evidence in `evidence/discovery/`.
 - Typed, versioned JSON capabilities with input bindings and integrity checks.
 - Model-free replay with locator agreement, checkpoints, and verified outputs.
 - Separate business outcomes, bounded recovery, failures, and human escalation.
 - Operator takeover and safe resume in the same live browser session.
-- Local OpenID Connect sign-in, tenant roles, and isolated browser contexts.
-- Durable replay records, duplicate-request protection, and interruption review.
 - One capability reused across two bank variants through tenant settings.
 - MCP tools that let an agent discover and call verified capabilities.
-- Independent evaluation of 132 cases, including handoff and repeated runs.
+- Independent evaluation: 12 fault scenarios × 2 banks × 5 input sets, plus repeat
+  runs and handoffs (132 cases).
+
+Beyond the brief (added for a credible handoff and retry story, not part of the
+capability contract): local OpenID Connect sign-in with tenant roles, and durable
+run records with duplicate-request protection and crash review.
 
 ## Build and run
 
@@ -65,6 +110,11 @@ Replay accepts `--input <file>` with these synthetic inputs:
 }
 ```
 
+Inputs are checked against the capability's own schema before the simulator starts
+or any earlier evidence is touched. A bad file fails with `INVALID_INPUTS` (naming
+fields, never values), `INVALID_INPUT_JSON` (without echoing the file), or
+`INPUT_FILE_NOT_FOUND`.
+
 Use `--scenario member_not_found` to exercise a business outcome. Use `--fixture`
 for the explicit handwritten test capability instead of the saved live artifact.
 
@@ -107,7 +157,11 @@ Run metadata and action intents are synced to `.runs/runtime/` before dispatch.
 One worker owns this directory. Inputs, outputs, browser cookies, and passwords
 are not saved there.
 
-After a crash, unfinished runs become **interrupted**. Start `npm run operator -- --sso`,
+Only runs where a write may have happened unseen need review: a failure after a
+dispatched draft step whose result was never verified, or a failure or abort after a
+person controlled the session. Read-only failures, business outcomes, and runs
+stopped while escalated with no pending write settle normally (`WORKER_STOPPED`) and
+never block later runs. After a crash, unfinished runs become **interrupted**. Start `npm run operator -- --sso`,
 sign in as `admin`, inspect the target application, then acknowledge the interruption. Stop
 the console before starting another worker. Acknowledgment never repeats an action
 or claims it succeeded. The lost browser session cannot resume; completed outputs
@@ -129,8 +183,9 @@ Discovery saves the next `capabilities/open_savings_subaccount_to_review/vN.json
 and its evidence under `evidence/discovery/<run-id>/`; replay then uses the newest
 verified version with no model.
 
-Bedrock supports SigV4 credentials or a bearer token. The default model is Nova 2
-Lite in `us-east-1`. Discovery is the only paid path. The cumulative $3 allowance
+Bedrock supports SigV4 credentials or a bearer token. `.env.example` sets the model
+to Nova 2 Lite (`BEDROCK_MODEL`) in `us-east-1`; models must be in the priced
+allowlist in `src/discovery/bedrock.ts`. Discovery is the only paid path. The cumulative $3 allowance
 is tracked in `.runs/model-budget.json`; cleanup preserves it. A new artifact
 becomes callable only after different-input replay passes on both banks.
 

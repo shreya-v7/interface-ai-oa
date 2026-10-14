@@ -43,8 +43,8 @@ Reproducibility: 2 saved artifacts, 1 distinct content digest(s) (independent ru
 | Output factual accuracy (success cases) | 100.0% |
 | False successes | 0 |
 | Model calls during replay | 0 |
-| Run latency (changed-input cases) | p50 544 ms · p95 2676 ms · max 2754 ms |
-| Step latency (dispatch → verified checkpoint, 946 steps) | p50 44 ms · p95 107 ms · max 2233 ms |
+| Run latency (changed-input cases) | p50 628 ms · p95 2785 ms · max 2812 ms |
+| Step latency (dispatch → verified checkpoint, 946 steps) | p50 52 ms · p95 114 ms · max 2244 ms |
 
 Outcome accuracy by expected class:
 

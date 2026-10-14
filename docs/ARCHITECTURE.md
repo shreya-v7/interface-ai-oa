@@ -57,6 +57,7 @@ flowchart LR
 | Control ownership        | Session epochs: every handover increments; stale actions refused at dispatch (`src/control/session.ts`)                                                          | Lease row with a fencing token checked by the worker before each action, so a partitioned worker cannot act          |
 | Artifacts                | Immutable `vN.json` with SHA-256 digest; verification bound to runtime, policy and profile digests (`src/registry.ts`)                                           | Object storage keyed by digest; promotion and rollback by digest                                                     |
 | Release safety           | Changing runtime code invalidates verification until `npm run verify` passes on both tenants                                                                     | CI re-verifies and runs the evaluation suite against the simulator and a vendor sandbox before a version is callable |
+| Artifact integrity       | Unkeyed SHA-256 digest and an unsigned verification record: anyone who can write the capability store can re-verify an edited artifact                           | The release pipeline signs verification records; workers accept only signed digests                                  |
 | Tenants                  | Profiles change origin, frame names and labels only; steps, identity and completion cannot be overridden (`vendor/legacy-core/tenants/`)                         | Tenant config service; one capability per vendor version serves every tenant on that version                         |
 | Identity and permissions | OIDC sign-in, 15-minute sessions; `AccessPolicy` grants `read`, `invoke`, `control`, `resolve` per tenant from `config/access.json`                              | Corporate SSO; grants managed in the control plane; every decision written to the audit log                          |
 | Safety                   | Policy gate on every action; browser network guard blocks commit endpoints, off-allowlist origins and unsafe redirects for automation and humans (`src/policy/`) | Unchanged in code, plus network-level egress allowlists per tenant pool                                              |
@@ -81,17 +82,20 @@ flowchart LR
    stored; the agent reads it with `run_status`.
 7. An escalation appears in the operator console. A person with `control` permission
    takes the live session, fixes it, and resumes; the run re-reads the screen first.
+   Workers run Chromium on a virtual display, so takeover streams the session to the
+   console and forwards the operator's input under the same ownership epoch. Locally
+   (as built) the operator uses the worker's own window.
 
 ## 4. Failure handling
 
-| Failure                   | Behavior                                                                                                                                                                                            |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Worker crash or host loss | Lease expires; the run becomes `interrupted`; if an intent for a draft or commit step had been written, it waits for human review and is never re-dispatched automatically                          |
-| Network partition         | The stale worker's fencing token is rejected on its next action; the run is reviewed, not duplicated                                                                                                |
-| Queue redelivery          | The lease and run ID make a second delivery a no-op                                                                                                                                                 |
-| Bank app slow or down     | Step deadlines bound waits; repeated application errors per tenant open a circuit breaker and return a typed failure instead of hammering the app                                                   |
-| UI drift at one tenant    | Locator-consensus warnings and outcome-mix shifts are aggregated per tenant × capability; above a threshold the capability is suspended for that tenant only, and an offline re-discovery is queued |
-| Bad release               | Promotion is by digest; rollback re-points the tenant to the previous verified digest                                                                                                               |
+| Failure                   | Behavior                                                                                                                                                                                                                                                        |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Worker crash or host loss | Lease expires; the run becomes `interrupted`; if an intent for a draft step had been written (a future `commit` class would always wait), it waits for human review and is never re-dispatched automatically                                                    |
+| Network partition         | The stale worker's fencing token is rejected on its next action; the run is reviewed, not duplicated                                                                                                                                                            |
+| Queue redelivery          | The lease and run ID make a second delivery a no-op                                                                                                                                                                                                             |
+| Bank app slow or down     | Step deadlines bound waits; repeated application errors per tenant open a circuit breaker and return a typed failure instead of hammering the app                                                                                                               |
+| UI drift at one tenant    | Locator-consensus warnings and outcome-mix shifts are aggregated per tenant × capability; above a threshold the capability is suspended for that tenant only, and an offline re-discovery is queued Not built: today each result only carries `drift` warnings. |
+| Bad release               | Promotion is by digest; rollback re-points the tenant to the previous verified digest                                                                                                                                                                           |
 
 ## 5. Capacity planning (assumptions to measure, not results)
 

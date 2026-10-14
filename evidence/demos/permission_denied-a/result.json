@@ -6,12 +6,12 @@
     "stepId": "s5",
     "expected": "Declared checkpoint and requested identity",
     "observed": "Checkpoint not verified; see sanitized evidence",
-    "effect": "unknown",
+    "effect": "none",
     "evidence": [
       "evidence/demos/permission_denied-a/failure-structure.json",
       "evidence/demos/permission_denied-a/failure.png"
     ],
-    "runId": "f11ffcb5-36c9-40bd-97c6-ff57976f3300",
+    "runId": "c2790425-966c-4f2b-a218-6e6818128517",
     "assisted": false
   }
 }

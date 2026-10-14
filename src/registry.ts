@@ -217,11 +217,20 @@ function acceptResult(entry: RunEntry, result: RunResult): void {
   const parsed = RunResultSchema.parse(result);
   const ledger = initializeRuntime();
   const record = ledger.getRecord(entry.runId);
-  if (record.state !== 'interrupted') {
+  // A run already settled (for example stopped at shutdown) keeps its recorded outcome;
+  // a late result from aborting its engine must not rewrite it.
+  if (record.state !== 'interrupted' && !(TERMINAL as readonly string[]).includes(record.state)) {
+    // Review is needed when a write may have happened unseen: a failure whose draft
+    // effect is unknown, or any failure after a person controlled the session (their
+    // actions are never verified by automation). A business-outcome screen is the
+    // application's own answer to the pending request, and a known failure effect is
+    // not uncertain, so those settle their pending actions instead of blocking runs.
+    const pending = ledger.getRecord(entry.runId).pendingActions;
+    const humanUnverified = pending.some((action) => action.stepId === 'human_control');
     const uncertain =
-      (parsed.status === 'failed' && parsed.effect === 'unknown') ||
-      ((parsed.status === 'failed' || parsed.status === 'business_outcome') &&
-        record.pendingActions.some((action) => action.effect === 'draft'));
+      parsed.status === 'failed' && (parsed.effect === 'unknown' || humanUnverified);
+    if (!uncertain && (parsed.status === 'business_outcome' || parsed.status === 'failed'))
+      for (const action of pending) ledger.completeStep(entry.runId, action.stepId);
     ledger.transition(
       entry.runId,
       uncertain ? 'interrupted' : parsed.status,
@@ -429,10 +438,22 @@ export async function closeRuns(): Promise<void> {
       try {
         const unfinished = !(TERMINAL as readonly string[]).includes(r.state);
         if (unfinished) {
-          if (initializeRuntime().getRecord(r.runId).state !== 'interrupted')
-            initializeRuntime().transition(r.runId, 'interrupted', 'WORKER_STOPPED');
+          const ledger = initializeRuntime();
+          const record = ledger.getRecord(r.runId);
+          // A stopped run needs review only if a write may have happened unseen: a
+          // dispatched draft step or human control (both recorded as pending drafts).
+          // Otherwise nothing could have changed, so it settles as a plain stop.
+          const unverifiedWrite = record.pendingActions.some((action) => action.effect === 'draft');
+          if (record.state !== 'interrupted') {
+            if (unverifiedWrite) ledger.transition(r.runId, 'interrupted', 'WORKER_STOPPED');
+            else {
+              for (const action of record.pendingActions)
+                ledger.completeStep(r.runId, action.stepId);
+              ledger.transition(r.runId, 'failed', 'WORKER_STOPPED');
+            }
+          }
           await r.engine.abort();
-          r.state = 'interrupted';
+          r.state = unverifiedWrite ? 'interrupted' : 'failed';
         }
       } finally {
         await r.engine.close();

@@ -1,6 +1,6 @@
 {
-  "checkedAt": "2026-10-14T12:01:42.144Z",
-  "runtimeDigest": "7f8556a138c16330df0ce58614bb559743c7542a4b0a0e091604692a23f2182c",
+  "checkedAt": "2026-10-14T15:06:20.171386Z",
+  "runtimeDigest": "afe57108d693d649adf5f6372973b94cf19cd9e9b38e6257a8b264b4d8b2d339",
   "build": {
     "compiled": true,
     "typecheck": true,
@@ -8,10 +8,10 @@
     "sourceMatchesCompiled": true
   },
   "tests": {
-    "passed": 168,
-    "total": 168,
+    "passed": 173,
+    "total": 173,
     "failed": 0,
-    "files": 21
+    "files": 22
   },
   "liveReplay": {
     "correct": 132,
@@ -41,7 +41,9 @@
     "compiledBrowserHandoff": true,
     "liveDiscoveredCapability": true,
     "tenant": "b",
-    "evidence": "evidence/sso-handoff/result.json"
+    "evidence": "evidence/sso-handoff/result.json",
+    "recordedOnRuntime": "7f8556a138c16330df0ce58614bb559743c7542a4b0a0e091604692a23f2182c",
+    "retestedBy": "test/sso-handoff.test.ts (passes on this runtime)"
   },
   "compiledMcp": {
     "catalogAndInvocation": true,
@@ -69,5 +71,12 @@
     "local single worker and local identity provider",
     "no browser restoration after process loss",
     "no production bank or external identity provider validation"
+  ],
+  "reviewFixes": [
+    "invalid --input is rejected against the capability schema before evidence is cleared or the browser starts",
+    "malformed input files fail with INVALID_INPUT_JSON without echoing file contents",
+    "read-only failures report effect none; business outcomes and read-only failures settle without operator review",
+    "runs stopped while escalated with no pending write settle as WORKER_STOPPED instead of blocking later runs",
+    "work done under human control still requires review if the run fails or is aborted"
   ]
 }

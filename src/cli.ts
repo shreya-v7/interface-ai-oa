@@ -35,6 +35,7 @@ import { createFixtureCapability } from '../fixtures/capability.js';
 import {
   ContractSchema,
   DEMO_CONTRACT,
+  validateInputs,
   type Capability,
   type Inputs,
   type RunResult,
@@ -141,6 +142,34 @@ function openInBrowser(url: string): void {
     /* The printed URL remains the fallback. */
   }
 }
+/**
+ * Reads a JSON input file without ever echoing its contents: Node's JSON errors quote
+ * the offending text, and input files hold member data.
+ */
+async function readJsonFile(path: string): Promise<unknown> {
+  let text: string;
+  try {
+    text = await readFile(path, 'utf8');
+  } catch {
+    throw new Error('INPUT_FILE_NOT_FOUND');
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error('INVALID_INPUT_JSON');
+  }
+}
+/** Validates against the capability's own input schema, naming fields but never values. */
+function checkedInputs(cap: Capability, raw: unknown): Inputs {
+  try {
+    return validateInputs(cap.inputs, raw);
+  } catch (error) {
+    const fields = ((error as { issues?: Array<{ path?: unknown[] }> }).issues ?? [])
+      .map((issue) => issue.path?.join('.') || '(input)')
+      .filter((field, i, all) => all.indexOf(field) === i);
+    throw new Error(`INVALID_INPUTS: ${fields.join(', ') || 'unrecognized input'}`);
+  }
+}
 function safeResult(result: RunResult) {
   return result.status === 'success'
     ? { ...result, outputs: 'withheld; verified in browser' }
@@ -216,18 +245,16 @@ async function main() {
       );
     const runId = randomUUID();
     const directory = join('evidence', 'discovery', runId);
-    const inputs: Inputs = values.input
-      ? JSON.parse(await readFile(values.input, 'utf8'))
-      : { ...DEMO_INPUTS };
+    const inputs = (values.input ? await readJsonFile(values.input) : { ...DEMO_INPUTS }) as Inputs;
     const id = values.cap ?? 'open_savings_subaccount_to_review';
     const contract = values.contract
-      ? ContractSchema.parse(JSON.parse(await readFile(values.contract, 'utf8')))
+      ? ContractSchema.parse(await readJsonFile(values.contract))
       : DEMO_CONTRACT;
     if (values.contract && !values['shadow-input'])
       throw new Error('SHADOW_INPUT_REQUIRED: a custom contract needs --shadow-input <path>.');
-    const shadowInputs: Inputs = values['shadow-input']
-      ? JSON.parse(await readFile(values['shadow-input'], 'utf8'))
-      : { ...SHADOW_INPUTS };
+    const shadowInputs = (
+      values['shadow-input'] ? await readJsonFile(values['shadow-input']) : { ...SHADOW_INPUTS }
+    ) as Inputs;
     const sim = await startSimulator();
     let operator: Awaited<ReturnType<typeof startOperatorServer>> | undefined;
     try {
@@ -330,9 +357,9 @@ async function main() {
     const version = values.version ? Number(values.version) : (await savedVersions(id))[0];
     if (!version) throw new Error('CAPABILITY_NOT_FOUND');
     const cap = await loadCapability(id, version);
-    const shadowInputs: Inputs = values['shadow-input']
-      ? JSON.parse(await readFile(values['shadow-input'], 'utf8'))
-      : { ...SHADOW_INPUTS };
+    const shadowInputs = (
+      values['shadow-input'] ? await readJsonFile(values['shadow-input']) : { ...SHADOW_INPUTS }
+    ) as Inputs;
     const directory = join('evidence', 'verification', `${id}-v${version}`);
     await rm(directory, { recursive: true, force: true });
     const sim = await startSimulator();
@@ -358,6 +385,12 @@ async function main() {
       : await loadLatestVerified(capId);
   if (values.fixture)
     console.log('HANDWRITTEN TEST FIXTURE - this is not evidence of model discovery.');
+  // Validate before starting anything or clearing evidence: a bad input file must not
+  // delete the previous run's evidence or reach the browser.
+  const inputs = checkedInputs(
+    cap,
+    values.input ? await readJsonFile(values.input) : { ...SHADOW_INPUTS },
+  );
   const sim = await startSimulator();
   let operator: Awaited<ReturnType<typeof startOperatorServer>> | undefined;
   let engine: ReplayEngine | undefined;
@@ -367,16 +400,17 @@ async function main() {
       if (!verification.profileDigests.includes(digestOf(sim.profiles[tenant])))
         throw new Error('UNVERIFIED_PROFILE');
     }
-    const inputs = values.input
-      ? JSON.parse(await readFile(values.input, 'utf8'))
-      : { ...SHADOW_INPUTS };
     const fault = (values.scenario ??
       (command === 'demo:handoff'
         ? 'session_expired'
         : command === 'demo:failure'
           ? 'wrong_amount_review'
           : 'none')) as Fault;
-    const ticket = sim.createSession({ tenant, inputs, fault });
+    const ticket = sim.createSession({
+      tenant,
+      inputs: inputs as unknown as ApplicationInputs,
+      fault,
+    });
     const runId = randomUUID();
     // One folder per scenario and tenant, replaced on each run, so evidence/demos/ is
     // exactly what the README commands produce. Fixture runs stay out of evidence/.

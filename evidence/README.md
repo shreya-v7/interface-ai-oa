@@ -10,9 +10,9 @@ is the immutable artifact used by the current replay evaluation.
 | `verification/<capability>-v<N>/` | `npm run verify` | Re-verification after code changes: model-free shadow replays on both banks. |
 | `eval/` | `npm run eval` | `report.md` summarizes results; `report.json` retains every case and verdict. `events.jsonl` retains all events with run IDs. `provenance.json` records code and artifact digests. `diagnostics/<case>/` keeps masked screenshots and text-free structures for the first varied case per scenario and tenant, plus both handoffs. |
 | `fixture-eval/` | `npm run eval -- --fixture` | The same evaluation on the handwritten fixture, kept separate from live results. |
-| `demos/<scenario>-<bank>/` | `npm run demo:replay`, `demo:failure`, `demo:handoff` | One folder per demonstrated outcome. |
+| `demos/<scenario>-<bank>/` | `npm run demo:replay -- --scenario <fault>`, `demo:failure` | One folder per outcome class: success (both banks), business outcomes (member not found, validation rejected), failures (permission denied with effect `none`, wrong review amount), escalations (ambiguous control, expired session). Each `result.json` holds the typed result. |
 | `mcp-invoke/` | `npm run demo:mcp` | A real stdio MCP client listing and calling the capability on bank B. |
-| `sso-handoff/` | Compiled browser integration run | Local OIDC sign-in as tenant B's operator, live takeover and resume of the saved capability, independent simulator record checks, and logout. A scripted operator performs the intervention. |
+| `sso-handoff/` | Compiled browser integration run | The completed human handoff: local OIDC sign-in as tenant B's operator, live takeover and resume of the saved capability, independent simulator record checks, and logout. A scripted operator performs the intervention. Recorded on the previous build (runtime `7f8556…`); `test/sso-handoff.test.ts` re-runs the same flow on every build. |
 | `metrics.json`, `metrics.md` | `npm run metrics` | Tokens, cost, latency, grounding, acceptance, reproducibility, outcome and output accuracy. |
 | `validation.json` | Final build and test run | Test totals, runtime fingerprint, replay gates, and authentication/recovery coverage. |
 

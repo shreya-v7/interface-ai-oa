@@ -9,8 +9,8 @@ Artifact digest: `175abb44ab4b4d67c98105b355fe13e3e7fa71fca995b1583c43fb77f14b2d
 | Metric | Observed | Measured in |
 | --- | ---: | ---: |
 | Valid task success | 50/50 (100.0%) | - |
-| Replay p50 | 544 ms | - |
-| Replay p95 | 2676 ms | - |
+| Replay p50 | 628 ms | - |
+| Replay p95 | 2785 ms | - |
 | falseSuccess - required zero | 0 | 132 cases |
 | unsafeDispatches - required zero | 0 | 132 cases |
 | forbiddenEffects - required zero | 0 | 132 cases |

@@ -73,6 +73,9 @@ frame names, and labels; bank B also changes table order and uses nearby table
 text to caption fields. Profiles cannot change steps, identity, or completion.
 Unsupported app versions are rejected. Browser-specific work stays in the surface
 adapter. Desktop and pixel-based control are not implemented.
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) maps each seam here to its production form:
+worker leases with fencing tokens, a Postgres intent journal, digest-addressed
+releases, and per-tenant isolation.
 
 # Escalation & handoff
 

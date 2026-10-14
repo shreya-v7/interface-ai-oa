@@ -137,6 +137,7 @@ becomes callable only after different-input replay passes on both banks.
 ## Read more
 
 - [REPORT.md](REPORT.md): architecture, stack choices, safety, and explicit cuts.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): production deployment design and its seams in this code.
 - [Measured results](evidence/metrics.md) and [evaluation](evidence/eval/report.md).
 - [Evidence index](evidence/README.md): where each result comes from.
 

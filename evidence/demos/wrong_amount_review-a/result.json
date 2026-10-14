@@ -1,0 +1,16 @@
+{
+  "source": "live",
+  "result": {
+    "status": "failed",
+    "code": "COMPLETION_MISMATCH",
+    "expected": "Declared checkpoint and requested identity",
+    "observed": "Checkpoint not verified; see sanitized evidence",
+    "effect": "applied",
+    "evidence": [
+      "evidence/demos/wrong_amount_review-a/failure-structure.json",
+      "evidence/demos/wrong_amount_review-a/failure.png"
+    ],
+    "runId": "95fea6db-bd1e-4bab-ba24-cdfddf4a7192",
+    "assisted": false
+  }
+}

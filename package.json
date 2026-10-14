@@ -1,0 +1,45 @@
+{
+  "name": "verified-ui-capabilities",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:edges": "vitest run test/edge-*.test.ts",
+    "sim": "tsx sim/server.ts",
+    "discover": "tsx src/cli.ts discover",
+    "verify": "tsx src/cli.ts verify",
+    "demo:replay": "tsx src/cli.ts demo:replay",
+    "demo:failure": "tsx src/cli.ts demo:failure",
+    "demo:handoff": "tsx src/cli.ts demo:handoff",
+    "demo:sso": "tsx src/cli.ts demo:handoff --sso",
+    "sso": "tsx sim/identity.ts",
+    "operator:setup": "tsx src/cli.ts operator:setup",
+    "operator": "tsx src/cli.ts operator",
+    "mcp": "tsx src/mcp/server.ts",
+    "demo:mcp": "tsx src/mcp/demo.ts",
+    "eval": "tsx eval/run.ts",
+    "metrics": "tsx eval/metrics.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "3.1146.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "dotenv": "18.0.5",
+    "fastify": "5.12.5",
+    "jose": "6.2.12",
+    "playwright": "1.63.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.4",
+    "prettier": "3.9.9",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "4.1.11"
+  }
+}

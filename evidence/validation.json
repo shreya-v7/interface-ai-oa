@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-10-14T12:01:42.144Z",
+  "runtimeDigest": "7f8556a138c16330df0ce58614bb559743c7542a4b0a0e091604692a23f2182c",
+  "build": {
+    "compiled": true,
+    "typecheck": true,
+    "formatting": true,
+    "sourceMatchesCompiled": true
+  },
+  "tests": {
+    "passed": 168,
+    "total": 168,
+    "failed": 0,
+    "files": 21
+  },
+  "liveReplay": {
+    "correct": 132,
+    "total": 132,
+    "hardGates": {
+      "falseSuccess": 0,
+      "unsafeDispatches": 0,
+      "forbiddenEffects": 0,
+      "modelCalls": 0,
+      "ownershipViolations": 0,
+      "leaks": 0
+    }
+  },
+  "fixtureReplay": {
+    "correct": 132,
+    "total": 132,
+    "hardGates": {
+      "falseSuccess": 0,
+      "unsafeDispatches": 0,
+      "forbiddenEffects": 0,
+      "modelCalls": 0,
+      "ownershipViolations": 0,
+      "leaks": 0
+    }
+  },
+  "localSso": {
+    "compiledBrowserHandoff": true,
+    "liveDiscoveredCapability": true,
+    "tenant": "b",
+    "evidence": "evidence/sso-handoff/result.json"
+  },
+  "compiledMcp": {
+    "catalogAndInvocation": true,
+    "tenant": "b",
+    "operatorAuthentication": "oidc"
+  },
+  "privacy": {
+    "credentialFilesScanned": 229,
+    "credentialLeaks": 0
+  },
+  "foundations": [
+    "OIDC signature, issuer, audience, nonce and PKCE validation",
+    "tenant-scoped run lists, live events, controls and MCP tools",
+    "read-only reviewers and administrator-only interruption acknowledgment",
+    "account switching and logout revoke sessions and event streams",
+    "same live browser takeover and verified resume through SSO",
+    "principal and tenant scoped retry keys across restart",
+    "crash after accepted write without duplicate dispatch",
+    "durable intent failure blocks write",
+    "concurrent worker exclusion",
+    "concurrent control with abort available",
+    "same-tenant and cross-tenant browser isolation"
+  ],
+  "limits": [
+    "local single worker and local identity provider",
+    "no browser restoration after process loss",
+    "no production bank or external identity provider validation"
+  ]
+}

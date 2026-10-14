@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "principals": [
+    {
+      "id": "operator-a",
+      "kind": "human",
+      "subject": "operator-a",
+      "grants": [{ "tenant": "a", "role": "operator" }]
+    },
+    {
+      "id": "operator-b",
+      "kind": "human",
+      "subject": "operator-b",
+      "grants": [{ "tenant": "b", "role": "operator" }]
+    },
+    {
+      "id": "reviewer-a",
+      "kind": "human",
+      "subject": "reviewer-a",
+      "grants": [{ "tenant": "a", "role": "viewer" }]
+    },
+    {
+      "id": "admin",
+      "kind": "human",
+      "subject": "admin",
+      "grants": [
+        { "tenant": "a", "role": "admin" },
+        { "tenant": "b", "role": "admin" }
+      ]
+    },
+    {
+      "id": "local_operator",
+      "kind": "human",
+      "grants": [
+        { "tenant": "a", "role": "admin" },
+        { "tenant": "b", "role": "admin" }
+      ]
+    },
+    { "id": "agent-a", "kind": "service", "grants": [{ "tenant": "a", "role": "agent" }] },
+    { "id": "agent-b", "kind": "service", "grants": [{ "tenant": "b", "role": "agent" }] }
+  ]
+}

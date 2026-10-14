@@ -1,0 +1,95 @@
+{
+  "runId": "b-ambiguous_duplicate_button-1",
+  "interventionId": "intervention-b-ambiguous_duplicate_button-1",
+  "stepId": "s5",
+  "reason": "AMBIGUOUS_TARGET",
+  "expected": "Current step checkpoint and matching subject",
+  "observation": {
+    "elements": [
+      {
+        "ref": "o14_nav_0",
+        "frameDepth": 1,
+        "role": "text",
+        "tag": "p"
+      },
+      {
+        "ref": "o14_nav_1",
+        "frameDepth": 1,
+        "role": "heading",
+        "tag": "h2"
+      },
+      {
+        "ref": "o14_nav_3",
+        "frameDepth": 1,
+        "role": "link",
+        "tag": "a"
+      },
+      {
+        "ref": "o14_nav_4",
+        "frameDepth": 1,
+        "role": "text",
+        "tag": "p"
+      },
+      {
+        "ref": "o14_main_content_0",
+        "frameDepth": 2,
+        "role": "text",
+        "tag": "p"
+      },
+      {
+        "ref": "o14_main_content_1",
+        "frameDepth": 2,
+        "role": "heading",
+        "tag": "h1"
+      },
+      {
+        "ref": "o14_main_content_2",
+        "frameDepth": 2,
+        "role": "columnheader",
+        "tag": "th"
+      },
+      {
+        "ref": "o14_main_content_4",
+        "frameDepth": 2,
+        "role": "text",
+        "tag": "span"
+      },
+      {
+        "ref": "o14_main_content_5",
+        "frameDepth": 2,
+        "role": "columnheader",
+        "tag": "th"
+      },
+      {
+        "ref": "o14_main_content_6",
+        "frameDepth": 2,
+        "role": "text",
+        "tag": "td"
+      },
+      {
+        "ref": "o14_main_content_7",
+        "frameDepth": 2,
+        "role": "columnheader",
+        "tag": "th"
+      },
+      {
+        "ref": "o14_main_content_8",
+        "frameDepth": 2,
+        "role": "text",
+        "tag": "td"
+      },
+      {
+        "ref": "o14_main_content_10",
+        "frameDepth": 2,
+        "role": "link",
+        "tag": "a"
+      },
+      {
+        "ref": "o14_main_content_12",
+        "frameDepth": 2,
+        "role": "link",
+        "tag": "a"
+      }
+    ]
+  }
+}

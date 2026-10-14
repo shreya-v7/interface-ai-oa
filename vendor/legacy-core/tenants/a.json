@@ -1,0 +1,37 @@
+{
+  "id": "a",
+  "vendor": "legacy-core",
+  "appVersion": "7.1",
+  "origin": "http://127.0.0.1:4101",
+  "frameAliases": {
+    "nav": "navigation",
+    "main": "main",
+    "content": "content"
+  },
+  "labelAliases": {
+    "searchHeading": "Member search",
+    "resultsHeading": "Search results",
+    "detailHeading": "Member details",
+    "formHeading": "Savings application",
+    "reviewHeading": "Review savings application",
+    "searchButton": "Search",
+    "viewButton": "View",
+    "newAccountButton": "New Sub-Account",
+    "reviewButton": "Review application",
+    "continueButton": "Continue",
+    "loginButton": "Resume session",
+    "loginHeading": "Session expired",
+    "operatorCode": "Operator code",
+    "commitButton": "Open Account",
+    "memberId": "Member #",
+    "productCode": "Product code",
+    "nickname": "Nickname",
+    "deposit": "Opening deposit",
+    "permissionHeading": "Permission denied",
+    "notFoundHeading": "No member found",
+    "validationHeading": "Validation rejected",
+    "appErrorHeading": "Application error",
+    "noticeHeading": "System Notice",
+    "retryLink": "Retry page"
+  }
+}

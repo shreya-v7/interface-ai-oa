@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-14T11:58:16.125Z",
+  "compiled": true,
+  "artifactDigest": "175abb44ab4b4d67c98105b355fe13e3e7fa71fca995b1583c43fb77f14b2dba",
+  "runtimeDigest": "7f8556a138c16330df0ce58614bb559743c7542a4b0a0e091604692a23f2182c",
+  "tenant": "b",
+  "identity": "operator-b",
+  "operator": "scripted test operator",
+  "passed": true,
+  "realOidcFlow": true,
+  "sameLiveSession": true,
+  "outputsVerified": true,
+  "independentSimulatorRecord": true,
+  "acceptedDrafts": 1,
+  "forbiddenEffects": 0,
+  "modelCalls": 0,
+  "logoutRevoked": true
+}

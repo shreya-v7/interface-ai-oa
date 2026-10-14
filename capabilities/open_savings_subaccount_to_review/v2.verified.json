@@ -1,0 +1,15 @@
+{
+  "artifactDigest": "175abb44ab4b4d67c98105b355fe13e3e7fa71fca995b1583c43fb77f14b2dba",
+  "profileDigests": [
+    "5c92f591f4373df5c6d741bd844941958fe92b5a7f6b3169d7ea8799406bc039",
+    "97bbbbe1809316a72cb72643e7257eeddf90bd7a73729b11c48f73ca85389e7d"
+  ],
+  "runtimeDigest": "7f8556a138c16330df0ce58614bb559743c7542a4b0a0e091604692a23f2182c",
+  "runtimeVersion": "0.1.0",
+  "verifiedAt": "2026-10-14T11:57:05.383Z",
+  "evidence": [
+    "evidence/verification/open_savings_subaccount_to_review-v2/shadow-a.json",
+    "evidence/verification/open_savings_subaccount_to_review-v2/shadow-b.json"
+  ],
+  "source": "live"
+}

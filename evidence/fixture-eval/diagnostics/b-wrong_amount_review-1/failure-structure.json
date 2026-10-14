@@ -1,0 +1,131 @@
+{
+  "elements": [
+    {
+      "ref": "o30_nav_0",
+      "frameDepth": 1,
+      "role": "text",
+      "tag": "p"
+    },
+    {
+      "ref": "o30_nav_1",
+      "frameDepth": 1,
+      "role": "heading",
+      "tag": "h2"
+    },
+    {
+      "ref": "o30_nav_3",
+      "frameDepth": 1,
+      "role": "link",
+      "tag": "a"
+    },
+    {
+      "ref": "o30_nav_4",
+      "frameDepth": 1,
+      "role": "text",
+      "tag": "p"
+    },
+    {
+      "ref": "o30_main_content_0",
+      "frameDepth": 2,
+      "role": "text",
+      "tag": "p"
+    },
+    {
+      "ref": "o30_main_content_1",
+      "frameDepth": 2,
+      "role": "heading",
+      "tag": "h1"
+    },
+    {
+      "ref": "o30_main_content_2",
+      "frameDepth": 2,
+      "role": "text",
+      "tag": "p"
+    },
+    {
+      "ref": "o30_main_content_3",
+      "frameDepth": 2,
+      "role": "columnheader",
+      "tag": "th"
+    },
+    {
+      "ref": "o30_main_content_5",
+      "frameDepth": 2,
+      "role": "text",
+      "tag": "span"
+    },
+    {
+      "ref": "o30_main_content_6",
+      "frameDepth": 2,
+      "role": "columnheader",
+      "tag": "th"
+    },
+    {
+      "ref": "o30_main_content_8",
+      "frameDepth": 2,
+      "role": "text",
+      "tag": "span"
+    },
+    {
+      "ref": "o30_main_content_9",
+      "frameDepth": 2,
+      "role": "columnheader",
+      "tag": "th"
+    },
+    {
+      "ref": "o30_main_content_11",
+      "frameDepth": 2,
+      "role": "text",
+      "tag": "span"
+    },
+    {
+      "ref": "o30_main_content_12",
+      "frameDepth": 2,
+      "role": "columnheader",
+      "tag": "th"
+    },
+    {
+      "ref": "o30_main_content_14",
+      "frameDepth": 2,
+      "role": "text",
+      "tag": "span"
+    },
+    {
+      "ref": "o30_main_content_15",
+      "frameDepth": 2,
+      "role": "columnheader",
+      "tag": "th"
+    },
+    {
+      "ref": "o30_main_content_17",
+      "frameDepth": 2,
+      "role": "text",
+      "tag": "span"
+    },
+    {
+      "ref": "o30_main_content_18",
+      "frameDepth": 2,
+      "role": "columnheader",
+      "tag": "th"
+    },
+    {
+      "ref": "o30_main_content_20",
+      "frameDepth": 2,
+      "role": "text",
+      "tag": "span"
+    },
+    {
+      "ref": "o30_main_content_22",
+      "frameDepth": 2,
+      "role": "link",
+      "tag": "a"
+    },
+    {
+      "ref": "o30_main_content_23",
+      "frameDepth": 2,
+      "role": "button",
+      "tag": "button",
+      "type": "submit"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "transport": "stdio",
+  "listedTools": [
+    "open_savings_subaccount_to_review_v2",
+    "run_status"
+  ],
+  "called": "open_savings_subaccount_to_review_v2",
+  "tenant": "b",
+  "status": "success",
+  "outputs": "withheld"
+}

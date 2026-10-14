@@ -1,0 +1,13 @@
+{
+  "source": "live",
+  "result": {
+    "status": "success",
+    "outputs": "withheld; verified in browser",
+    "runId": "d24367e0-fa52-4758-82e7-21151e393517",
+    "recoveries": [],
+    "drift": [
+      "MISSING_ANCHORS_1"
+    ],
+    "assisted": false
+  }
+}

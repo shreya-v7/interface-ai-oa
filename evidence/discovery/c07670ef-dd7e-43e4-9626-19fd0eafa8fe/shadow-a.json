@@ -1,0 +1,9 @@
+{
+  "artifactDigest": "aee5478d8d3ad8b97c478240818b4510b903715a0befdcceb4909296f322848d",
+  "tenant": "a",
+  "source": "live",
+  "differentInputs": true,
+  "status": "success",
+  "independentOracle": true,
+  "modelCalls": 0
+}

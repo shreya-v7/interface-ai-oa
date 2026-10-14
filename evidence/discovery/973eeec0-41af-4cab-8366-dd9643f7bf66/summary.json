@@ -1,0 +1,8 @@
+{
+  "source": "live",
+  "artifact": "capabilities/open_savings_subaccount_to_review/v2.json",
+  "modelCalls": 22,
+  "costUsd": 0.021158829999999997,
+  "shadowReplays": 2,
+  "status": "verified"
+}

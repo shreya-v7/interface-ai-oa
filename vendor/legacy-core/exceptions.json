@@ -1,0 +1,30 @@
+{
+  "id": "legacy-core@7:exceptions",
+  "rules": [
+    { "code": "PERMISSION_DENIED", "marker": "@permissionHeading", "disposition": "failed" },
+    { "code": "SESSION_EXPIRED", "marker": "@loginHeading", "disposition": "escalated" },
+    { "code": "MEMBER_NOT_FOUND", "marker": "@notFoundHeading", "disposition": "business_outcome" },
+    {
+      "code": "VALIDATION_REJECTED",
+      "marker": "@validationHeading",
+      "disposition": "business_outcome"
+    },
+    {
+      "code": "APP_ERROR",
+      "marker": "@appErrorHeading",
+      "disposition": "recoverable",
+      "handler": { "action": "retry_read", "role": "link", "label": "@retryLink", "maxAttempts": 1 }
+    },
+    {
+      "code": "INTERSTITIAL_NOTICE",
+      "marker": "@noticeHeading",
+      "disposition": "recoverable",
+      "handler": {
+        "action": "click",
+        "role": "button",
+        "label": "@continueButton",
+        "maxAttempts": 2
+      }
+    }
+  ]
+}

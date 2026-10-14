@@ -1,0 +1,10 @@
+{
+  "source": "live",
+  "result": {
+    "status": "escalated",
+    "interventionId": "intervention-1aeebf39-6582-4eda-96d6-ed313f748ca2",
+    "reason": "AMBIGUOUS_TARGET",
+    "runId": "1aeebf39-6582-4eda-96d6-ed313f748ca2",
+    "assisted": false
+  }
+}

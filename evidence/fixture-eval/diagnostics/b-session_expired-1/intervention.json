@@ -1,0 +1,67 @@
+{
+  "runId": "b-session_expired-1",
+  "interventionId": "intervention-b-session_expired-1",
+  "stepId": "s5",
+  "reason": "SESSION_EXPIRED",
+  "expected": "Current step checkpoint and matching subject",
+  "observation": {
+    "elements": [
+      {
+        "ref": "o15_nav_0",
+        "frameDepth": 1,
+        "role": "text",
+        "tag": "p"
+      },
+      {
+        "ref": "o15_nav_1",
+        "frameDepth": 1,
+        "role": "heading",
+        "tag": "h2"
+      },
+      {
+        "ref": "o15_nav_3",
+        "frameDepth": 1,
+        "role": "link",
+        "tag": "a"
+      },
+      {
+        "ref": "o15_nav_4",
+        "frameDepth": 1,
+        "role": "text",
+        "tag": "p"
+      },
+      {
+        "ref": "o15_main_content_0",
+        "frameDepth": 2,
+        "role": "text",
+        "tag": "p"
+      },
+      {
+        "ref": "o15_main_content_1",
+        "frameDepth": 2,
+        "role": "heading",
+        "tag": "h1"
+      },
+      {
+        "ref": "o15_main_content_2",
+        "frameDepth": 2,
+        "role": "text",
+        "tag": "p"
+      },
+      {
+        "ref": "o15_main_content_4",
+        "frameDepth": 2,
+        "role": "textbox",
+        "tag": "input",
+        "type": "password"
+      },
+      {
+        "ref": "o15_main_content_6",
+        "frameDepth": 2,
+        "role": "button",
+        "tag": "button",
+        "type": "submit"
+      }
+    ]
+  }
+}

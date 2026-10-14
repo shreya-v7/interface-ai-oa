@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.runs/
+tmp/
+.DS_Store
+# interface.ai's assignment document stays local; it is not ours to publish.
+docs/assignment.pdf

@@ -1,0 +1,167 @@
+{
+  "generatedFrom": [
+    "evidence/discovery/*/events.jsonl",
+    "evidence/eval/report.json",
+    "evidence/eval/events.jsonl",
+    "capabilities/*/v*.json"
+  ],
+  "discovery": {
+    "runs": [
+      {
+        "runId": "973eeec0-41af-4cab-8366-dd9643f7bf66",
+        "artifact": "capabilities/open_savings_subaccount_to_review/v2.json",
+        "status": "verified",
+        "modelCalls": 22,
+        "decisions": 22,
+        "tokens": {
+          "input": 54601,
+          "output": 1142,
+          "inputPerCall": {
+            "count": 22,
+            "p50": 2519,
+            "p95": 2776,
+            "max": 2776
+          },
+          "outputPerCall": {
+            "count": 22,
+            "p50": 46,
+            "p95": 92,
+            "max": 92
+          }
+        },
+        "costUsd": 0.021159,
+        "callLatencyMs": {
+          "count": 22,
+          "p50": 1197,
+          "p95": 1429,
+          "max": 1463
+        },
+        "wallTimeMs": 26875,
+        "outcomes": {
+          "executedActions": 8,
+          "verifiedCheckpoints": 7,
+          "acceptedFinish": 1,
+          "rejected": 6,
+          "rejectedByCode": {
+            "CHECKPOINT_REQUIRED": 4,
+            "CHECKPOINT_ALREADY_VERIFIED": 1,
+            "SYMBOLIC_INPUT_REQUIRED": 1
+          }
+        },
+        "groundingRate": 1,
+        "acceptanceRate": 0.7273
+      },
+      {
+        "runId": "c07670ef-dd7e-43e4-9626-19fd0eafa8fe",
+        "artifact": "capabilities/open_savings_subaccount_to_review/v1.json",
+        "status": "verified",
+        "modelCalls": 22,
+        "decisions": 22,
+        "tokens": {
+          "input": 54601,
+          "output": 1142,
+          "inputPerCall": {
+            "count": 22,
+            "p50": 2519,
+            "p95": 2776,
+            "max": 2776
+          },
+          "outputPerCall": {
+            "count": 22,
+            "p50": 46,
+            "p95": 92,
+            "max": 92
+          }
+        },
+        "costUsd": 0.021159,
+        "callLatencyMs": {
+          "count": 22,
+          "p50": 743,
+          "p95": 1167,
+          "max": 1315
+        },
+        "wallTimeMs": 18713,
+        "outcomes": {
+          "executedActions": 8,
+          "verifiedCheckpoints": 7,
+          "acceptedFinish": 1,
+          "rejected": 6,
+          "rejectedByCode": {
+            "CHECKPOINT_REQUIRED": 4,
+            "CHECKPOINT_ALREADY_VERIFIED": 1,
+            "SYMBOLIC_INPUT_REQUIRED": 1
+          }
+        },
+        "groundingRate": 1,
+        "acceptanceRate": 0.7273
+      }
+    ],
+    "reproducibility": {
+      "distinctArtifacts": 1,
+      "artifacts": 2,
+      "identical": true
+    }
+  },
+  "replay": {
+    "cases": 132,
+    "outcomeAccuracy": 1,
+    "outcomeAccuracyByExpectedClass": {
+      "success": {
+        "total": 62,
+        "correct": 62
+      },
+      "business_outcome": {
+        "total": 20,
+        "correct": 20
+      },
+      "failed": {
+        "total": 30,
+        "correct": 30
+      },
+      "escalated": {
+        "total": 20,
+        "correct": 20
+      }
+    },
+    "outputFactualAccuracy": 1,
+    "falseSuccesses": 0,
+    "hardGates": {
+      "falseSuccess": 0,
+      "unsafeDispatches": 0,
+      "forbiddenEffects": 0,
+      "modelCalls": 0,
+      "ownershipViolations": 0,
+      "leaks": 0
+    },
+    "modelCallsDuringReplay": 0,
+    "runLatencyMs": {
+      "count": 120,
+      "p50": 544,
+      "p95": 2676,
+      "max": 2754
+    },
+    "stepLatencyMs": {
+      "count": 946,
+      "p50": 44,
+      "p95": 107,
+      "max": 2233
+    },
+    "repeatability": [
+      {
+        "tenant": "a",
+        "runs": 5,
+        "distinctActionHashes": 1,
+        "distinctOutcomes": 1,
+        "stable": true
+      },
+      {
+        "tenant": "b",
+        "runs": 5,
+        "distinctActionHashes": 1,
+        "distinctOutcomes": 1,
+        "stable": true
+      }
+    ]
+  },
+  "training": "None. No model is trained or fine-tuned; there are no training metrics. Discovery uses an off-the-shelf model; replay uses no model."
+}

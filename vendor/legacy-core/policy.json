@@ -1,0 +1,31 @@
+{
+  "id": "legacy-core@7:policy",
+  "readPaths": [
+    "/core",
+    "/core/",
+    "/core/nav",
+    "/core/workspace",
+    "/core/members/search",
+    "/core/members/results",
+    "/core/members/detail",
+    "/core/application/new",
+    "/core/application/review"
+  ],
+  "draftPostPaths": ["/core/application/review", "/core/notice/continue", "/core/login"],
+  "automatedClickLabels": [
+    "@searchButton",
+    "@viewButton",
+    "@newAccountButton",
+    "@reviewButton",
+    "@continueButton",
+    "Member search",
+    "@retryLink"
+  ],
+  "fillableFields": ["@memberId", "@nickname", "@deposit"],
+  "selectableFields": ["@productCode"],
+  "forbiddenTargets": ["Open Account", "Delete"],
+  "allowDownloads": false,
+  "allowPopups": false,
+  "allowServiceWorkers": false,
+  "allowWebSockets": false
+}

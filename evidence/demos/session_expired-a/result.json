@@ -1,0 +1,10 @@
+{
+  "source": "live",
+  "result": {
+    "status": "escalated",
+    "interventionId": "intervention-85fb952d-ac90-4e8a-9110-c5a303528e0a",
+    "reason": "SESSION_EXPIRED",
+    "runId": "85fb952d-ac90-4e8a-9110-c5a303528e0a",
+    "assisted": false
+  }
+}

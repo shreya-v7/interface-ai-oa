@@ -1,0 +1,735 @@
+{
+  "schemaVersion": 1,
+  "id": "open_savings_subaccount_to_review",
+  "version": 2,
+  "description": "Find the specified member and prepare their savings sub-account application. Stop at the review screen and return the member ID, product code, nickname and opening deposit.",
+  "app": {
+    "vendor": "legacy-core",
+    "versions": [
+      "7.1"
+    ]
+  },
+  "inputs": {
+    "memberId": {
+      "type": "string",
+      "sensitivity": "private",
+      "pattern": "^\\d{6}$"
+    },
+    "productCode": {
+      "type": "enum",
+      "sensitivity": "public",
+      "values": [
+        "SAV-STD",
+        "SAV-HY"
+      ]
+    },
+    "nickname": {
+      "type": "string",
+      "sensitivity": "private",
+      "maxLength": 24
+    },
+    "openingDepositMinor": {
+      "type": "integer",
+      "sensitivity": "private",
+      "min": 0,
+      "max": 10000000
+    }
+  },
+  "outputs": {
+    "memberId": {
+      "type": "string",
+      "from": "t17",
+      "parser": "text"
+    },
+    "productCode": {
+      "type": "string",
+      "from": "t18",
+      "parser": "text"
+    },
+    "nickname": {
+      "type": "string",
+      "from": "t19",
+      "parser": "text"
+    },
+    "openingDepositMinor": {
+      "type": "integer",
+      "from": "t20",
+      "parser": "usd_to_minor"
+    }
+  },
+  "identity": {
+    "input": "memberId",
+    "label": "@memberId",
+    "screens": [
+      "@detailHeading",
+      "@formHeading",
+      "@reviewHeading"
+    ]
+  },
+  "targets": {
+    "t1": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "heading",
+          "name": "@label.searchHeading"
+        },
+        {
+          "by": "near",
+          "text": "Harbor Community Bank · Legacy Core 7.1 · Synthetic demonstration"
+        },
+        {
+          "by": "text",
+          "text": "@label.searchHeading"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t2": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "label",
+          "text": "@label.memberId"
+        },
+        {
+          "by": "role",
+          "role": "textbox",
+          "name": "@label.memberId"
+        },
+        {
+          "by": "near",
+          "text": "@label.memberId"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t3": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "button",
+          "name": "@label.searchButton"
+        },
+        {
+          "by": "text",
+          "text": "@label.searchButton"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t4": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "heading",
+          "name": "@label.resultsHeading"
+        },
+        {
+          "by": "near",
+          "text": "Harbor Community Bank · Legacy Core 7.1 · Synthetic demonstration"
+        },
+        {
+          "by": "text",
+          "text": "@label.resultsHeading"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t5": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "tableRow",
+          "header": "@label.memberId",
+          "key": {
+            "input": "memberId"
+          },
+          "name": "@label.viewButton"
+        }
+      ],
+      "minAgree": 1,
+      "required": [
+        0
+      ]
+    },
+    "t6": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "heading",
+          "name": "@label.detailHeading"
+        },
+        {
+          "by": "near",
+          "text": "Harbor Community Bank · Legacy Core 7.1 · Synthetic demonstration"
+        },
+        {
+          "by": "text",
+          "text": "@label.detailHeading"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t7": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "link",
+          "name": "@label.newAccountButton"
+        },
+        {
+          "by": "text",
+          "text": "@label.newAccountButton"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t8": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "heading",
+          "name": "@label.formHeading"
+        },
+        {
+          "by": "near",
+          "text": "Harbor Community Bank · Legacy Core 7.1 · Synthetic demonstration"
+        },
+        {
+          "by": "text",
+          "text": "@label.formHeading"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t9": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "label",
+          "text": "@label.nickname"
+        },
+        {
+          "by": "role",
+          "role": "textbox",
+          "name": "@label.nickname"
+        },
+        {
+          "by": "near",
+          "text": "@label.nickname"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t10": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "heading",
+          "name": "@label.formHeading"
+        },
+        {
+          "by": "near",
+          "text": "Harbor Community Bank · Legacy Core 7.1 · Synthetic demonstration"
+        },
+        {
+          "by": "text",
+          "text": "@label.formHeading"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t11": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "label",
+          "text": "@label.productCode"
+        },
+        {
+          "by": "role",
+          "role": "combobox",
+          "name": "@label.productCode"
+        },
+        {
+          "by": "near",
+          "text": "@label.productCode"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t12": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "label",
+          "text": "@label.productCode"
+        },
+        {
+          "by": "role",
+          "role": "combobox",
+          "name": "@label.productCode"
+        },
+        {
+          "by": "near",
+          "text": "@label.productCode"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t13": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "label",
+          "text": "@label.deposit"
+        },
+        {
+          "by": "role",
+          "role": "textbox",
+          "name": "@label.deposit"
+        },
+        {
+          "by": "near",
+          "text": "@label.deposit"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t14": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "heading",
+          "name": "@label.formHeading"
+        },
+        {
+          "by": "near",
+          "text": "Harbor Community Bank · Legacy Core 7.1 · Synthetic demonstration"
+        },
+        {
+          "by": "text",
+          "text": "@label.formHeading"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t15": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "button",
+          "name": "@label.reviewButton"
+        },
+        {
+          "by": "text",
+          "text": "@label.reviewButton"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t16": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "heading",
+          "name": "@label.reviewHeading"
+        },
+        {
+          "by": "near",
+          "text": "Harbor Community Bank · Legacy Core 7.1 · Synthetic demonstration"
+        },
+        {
+          "by": "text",
+          "text": "@label.reviewHeading"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    },
+    "t17": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "near",
+          "text": "@label.memberId"
+        }
+      ],
+      "minAgree": 1,
+      "required": []
+    },
+    "t18": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "near",
+          "text": "@label.productCode"
+        }
+      ],
+      "minAgree": 1,
+      "required": []
+    },
+    "t19": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "near",
+          "text": "@label.nickname"
+        }
+      ],
+      "minAgree": 1,
+      "required": []
+    },
+    "t20": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "near",
+          "text": "@label.deposit"
+        }
+      ],
+      "minAgree": 1,
+      "required": []
+    },
+    "t21": {
+      "frame": [
+        "main",
+        "content"
+      ],
+      "anchors": [
+        {
+          "by": "role",
+          "role": "heading",
+          "name": "@label.reviewHeading"
+        },
+        {
+          "by": "near",
+          "text": "Harbor Community Bank · Legacy Core 7.1 · Synthetic demonstration"
+        },
+        {
+          "by": "text",
+          "text": "@label.reviewHeading"
+        }
+      ],
+      "minAgree": 2,
+      "required": []
+    }
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "action": {
+        "type": "navigate",
+        "route": {
+          "template": "/core",
+          "bindings": {}
+        }
+      },
+      "post": {
+        "op": "visible",
+        "target": "t1"
+      },
+      "effect": "read",
+      "repeat": "read",
+      "timeoutMs": 10000
+    },
+    {
+      "id": "s2",
+      "action": {
+        "type": "fill",
+        "target": "t2",
+        "value": {
+          "input": "memberId"
+        }
+      },
+      "pre": {
+        "op": "visible",
+        "target": "t1"
+      },
+      "post": {
+        "op": "valueEquals",
+        "target": "t2",
+        "value": {
+          "input": "memberId"
+        }
+      },
+      "effect": "draft",
+      "repeat": "same_value",
+      "timeoutMs": 10000
+    },
+    {
+      "id": "s3",
+      "action": {
+        "type": "click",
+        "target": "t3"
+      },
+      "pre": {
+        "op": "valueEquals",
+        "target": "t2",
+        "value": {
+          "input": "memberId"
+        }
+      },
+      "post": {
+        "op": "visible",
+        "target": "t4"
+      },
+      "effect": "read",
+      "repeat": "read",
+      "timeoutMs": 10000
+    },
+    {
+      "id": "s4",
+      "action": {
+        "type": "click",
+        "target": "t5"
+      },
+      "pre": {
+        "op": "visible",
+        "target": "t4"
+      },
+      "post": {
+        "op": "visible",
+        "target": "t6"
+      },
+      "effect": "read",
+      "repeat": "read",
+      "timeoutMs": 10000
+    },
+    {
+      "id": "s5",
+      "action": {
+        "type": "click",
+        "target": "t7"
+      },
+      "pre": {
+        "op": "visible",
+        "target": "t6"
+      },
+      "post": {
+        "op": "visible",
+        "target": "t8"
+      },
+      "effect": "read",
+      "repeat": "read",
+      "timeoutMs": 10000
+    },
+    {
+      "id": "s6",
+      "action": {
+        "type": "fill",
+        "target": "t9",
+        "value": {
+          "input": "nickname"
+        }
+      },
+      "pre": {
+        "op": "visible",
+        "target": "t8"
+      },
+      "post": {
+        "op": "valueEquals",
+        "target": "t9",
+        "value": {
+          "input": "nickname"
+        }
+      },
+      "effect": "draft",
+      "repeat": "same_value",
+      "timeoutMs": 10000
+    },
+    {
+      "id": "s7",
+      "action": {
+        "type": "select",
+        "target": "t12",
+        "value": {
+          "input": "productCode"
+        }
+      },
+      "pre": {
+        "op": "visible",
+        "target": "t10"
+      },
+      "post": {
+        "op": "valueEquals",
+        "target": "t12",
+        "value": {
+          "input": "productCode"
+        }
+      },
+      "effect": "draft",
+      "repeat": "same_value",
+      "timeoutMs": 10000
+    },
+    {
+      "id": "s8",
+      "action": {
+        "type": "fill",
+        "target": "t13",
+        "value": {
+          "input": "openingDepositMinor",
+          "format": "minor_to_decimal"
+        }
+      },
+      "pre": {
+        "op": "valueEquals",
+        "target": "t12",
+        "value": {
+          "input": "productCode"
+        }
+      },
+      "post": {
+        "op": "valueEquals",
+        "target": "t13",
+        "value": {
+          "input": "openingDepositMinor",
+          "format": "minor_to_decimal"
+        }
+      },
+      "effect": "draft",
+      "repeat": "same_value",
+      "timeoutMs": 10000
+    },
+    {
+      "id": "s9",
+      "action": {
+        "type": "click",
+        "target": "t15"
+      },
+      "pre": {
+        "op": "visible",
+        "target": "t14"
+      },
+      "post": {
+        "op": "visible",
+        "target": "t16"
+      },
+      "effect": "draft",
+      "repeat": "never",
+      "timeoutMs": 10000
+    }
+  ],
+  "completion": {
+    "op": "all",
+    "args": [
+      {
+        "op": "visible",
+        "target": "t21"
+      },
+      {
+        "op": "outputEquals",
+        "output": "memberId",
+        "input": "memberId"
+      },
+      {
+        "op": "outputEquals",
+        "output": "productCode",
+        "input": "productCode"
+      },
+      {
+        "op": "outputEquals",
+        "output": "nickname",
+        "input": "nickname"
+      },
+      {
+        "op": "outputEquals",
+        "output": "openingDepositMinor",
+        "input": "openingDepositMinor"
+      }
+    ]
+  },
+  "exceptions": "legacy-core@7:exceptions",
+  "provenance": {
+    "discoveryRun": "973eeec0-41af-4cab-8366-dd9643f7bf66",
+    "model": "us.amazon.nova-2-lite-v1:0",
+    "source": "live",
+    "createdAt": "2026-10-06T19:59:48.604Z"
+  },
+  "digest": "175abb44ab4b4d67c98105b355fe13e3e7fa71fca995b1583c43fb77f14b2dba"
+}

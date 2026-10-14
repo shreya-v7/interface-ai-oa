@@ -1,0 +1,15 @@
+{
+  "artifactDigest": "aee5478d8d3ad8b97c478240818b4510b903715a0befdcceb4909296f322848d",
+  "profileDigests": [
+    "5c92f591f4373df5c6d741bd844941958fe92b5a7f6b3169d7ea8799406bc039",
+    "97bbbbe1809316a72cb72643e7257eeddf90bd7a73729b11c48f73ca85389e7d"
+  ],
+  "runtimeDigest": "b44f6f3045d22769427070ea1534a88237878138a6a9c358bdcc0a4f7abd50f6",
+  "runtimeVersion": "0.1.0",
+  "verifiedAt": "2026-10-06T19:44:15.754Z",
+  "evidence": [
+    "evidence/discovery/c07670ef-dd7e-43e4-9626-19fd0eafa8fe/shadow-a.json",
+    "evidence/discovery/c07670ef-dd7e-43e4-9626-19fd0eafa8fe/shadow-b.json"
+  ],
+  "source": "live"
+}

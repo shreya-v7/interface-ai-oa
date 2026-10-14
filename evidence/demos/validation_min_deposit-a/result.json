@@ -1,0 +1,9 @@
+{
+  "source": "live",
+  "result": {
+    "status": "business_outcome",
+    "code": "VALIDATION_REJECTED",
+    "runId": "37380e71-cd8b-4d3c-bcbc-0fd45539a94b",
+    "assisted": false
+  }
+}

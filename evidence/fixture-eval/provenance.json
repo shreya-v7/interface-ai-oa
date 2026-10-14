@@ -1,0 +1,13 @@
+{
+  "source": "test_fixture",
+  "capabilityDigest": "70f3a88564a8a9bbc126f7e172f720b5a70c19d8de6d411353a390a0d9bafdf0",
+  "runtimeDigest": "7f8556a138c16330df0ce58614bb559743c7542a4b0a0e091604692a23f2182c",
+  "evaluationDigest": "2463d2c81dcd4eb6647c3e1afcd762b20092d9adca468fae4af2f74ce313ab8e",
+  "profileDigests": [
+    "db0cecd5691b0a5b95661f30383c0766c6ab28d9514ffccf41538d3880c1e7c1",
+    "565eab10aa00df9ecbc275a605df2952b7755d2b21f3457c2fb33706b9c53cf2"
+  ],
+  "scenarioDigest": "ae2820c4fafd5fa76da6d882694325f50d0934fc8051c551032c5b7e80e973c6",
+  "suite": "2-tenants-12-scenarios-5-variants-plus-fixed-and-handoff",
+  "modelUsed": false
+}
